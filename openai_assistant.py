@@ -68,6 +68,7 @@ class AssistantChat:
             run = self.run_assistant()
 
             # Loop to check the response status of the assistant
+            counter = 0
             while True:
                 run_status = self.check_run_status(run.id)
                 if run_status.status == "completed":
@@ -77,6 +78,11 @@ class AssistantChat:
                 else:
                     print("...")
                     time.sleep(2)
+                    counter = counter + 1
+                    if counter > 5:
+                        print(f"Please check the api status on https://status.openai.com/")
+                        counter = 0
+                    
 
 
 if __name__ == "__main__":
