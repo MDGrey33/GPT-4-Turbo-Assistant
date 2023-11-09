@@ -2,6 +2,8 @@
 
 This is an implementation of GPT-4-Turbo assistant on Python.
 
+YouTube video showing how it works kind of recorded QA https://youtu.be/4KgEMO4Ufis
+
 I will go into more detail about it as I explore more, feel free to contribute.
 
 For now, it implements the conversation with the extended context and code interpreter.
