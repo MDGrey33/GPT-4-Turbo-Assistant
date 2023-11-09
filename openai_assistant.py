@@ -20,8 +20,16 @@ class AssistantChat:
         )
         self.assistant_id = assistant.id
 
-    def summon_assistant(self, assistant_id):
-        self.assistant_id = assistant_id
+    def list_assistants(self):
+        return self.client.beta.assistants.list()
+
+    def load_assistant(self, assistant_id):
+        try:
+            assistant = self.client.beta.assistants.retrieve(assistant_id=assistant_id)
+            self.assistant_id = assistant.id
+            print(f"Loaded assistant '{assistant.name}' with ID: {assistant.id}")
+        except Exception as e:
+            print(f"An error occurred while loading the assistant: {e}")
 
     def create_thread(self):
         thread = self.client.beta.threads.create()
@@ -57,8 +65,43 @@ class AssistantChat:
                 print(f"Assistant: {message.content[0].text.value}")
 
     def chat(self):
-        self.create_assistant()
-        self.create_thread()
+        print("Welcome to Assistant Chat!")
+        print("1. Create a new assistant")
+        print("2. Load an existing assistant")
+
+        try:
+            choice = int(input("Select an option (1 or 2): "))
+        except ValueError:
+            print("Invalid input. Please enter a number (1 or 2).")
+            return
+
+        if choice == 1:
+            self.create_assistant()
+            self.create_thread()
+        elif choice == 2:
+            assistants_list = self.list_assistants()
+            print("Here are the available assistants:")
+            for idx, assistant in enumerate(assistants_list.data):
+                print(f"{idx + 1}. {assistant.name} (ID: {assistant.id})")
+
+            try:
+                selected_idx = int(input("Enter the number of the assistant you want to load: ")) - 1
+                if 0 <= selected_idx < len(assistants_list.data):
+                    selected_assistant = assistants_list.data[selected_idx]
+                    self.load_assistant(selected_assistant.id)
+                    self.create_thread()
+                else:
+                    print("Invalid selection. Exiting the program.")
+                    return
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+                return
+            except Exception as e:
+                print(f"An error occurred while loading the assistant: {e}")
+                return
+        else:
+            print("Invalid option. Exiting the program.")
+            return
 
         while True:
             user_input = input("You: ")
@@ -78,18 +121,17 @@ class AssistantChat:
                 else:
                     print("...")
                     time.sleep(2)
-                    counter = counter + 1
+                    counter += 1
                     if counter > 5:
-                        print(f"Please check the api status on https://status.openai.com/")
+                        print("Please check the API status on https://status.openai.com/")
                         counter = 0
-                    
 
 
 if __name__ == "__main__":
-    open_ai_key = #your api key here
+    open_ai_key = #Your OpenAI API key here
     assistant_chat = AssistantChat(
         api_key=open_ai_key,
-        assistant_name="Sam",
+        assistant_name="Sarasin",
         assistant_instructions="""You are a sarcastic agent who will make fun of anything""",
         model="gpt-4-1106-preview"
     )
