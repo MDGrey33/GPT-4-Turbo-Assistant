@@ -1,177 +1,13 @@
 import time
 from openai import OpenAI
 from credentials import openai_key
-import os
+from chat_bot.files import File, manage_files, create_file
+from chat_bot.assistants import AssistantManager
 
 
 def initiate_client():
     client = OpenAI(api_key=openai_key)
     return client
-
-
-def get_all_files_in_path(file_path):
-    """
-    Returns a list of all file paths within the specified directory and its subdirectories.
-    Skips '.DS_Store' files common on macOS.
-
-    Args:
-    - directory (str): The path to the directory.
-
-    Returns:
-    - list: A list of file paths.
-    """
-    all_file_paths = []
-    for root, _, files in os.walk(file_path):
-        for file in files:
-            if file != '.DS_Store':
-                all_file_paths.append(os.path.join(root, file))
-    return all_file_paths
-
-
-class File:
-    def __init__(self, client: OpenAI):
-        self.client = client.files
-
-    def create(self, file_path, purpose):
-        with open(file_path, 'rb') as file_object:
-            response = self.client.create(file=file_object, purpose=purpose)
-            return response.id
-
-    def list(self):
-        files_data = self.client.list().data
-        return {file.id: {"filename": file.filename, "purpose": file.purpose} for file in files_data}
-
-    def delete(self, file_id):
-        self.client.delete(file_id)
-        return f"File with ID {file_id} has been deleted."
-
-
-# Function outside the class to manage files
-def manage_files(client: OpenAI):
-    file_manager = File(client)
-    files = file_manager.list()
-
-    print("Available Files:")
-    for file_id, file_data in files.items():
-        print(f"ID: {file_id}, Filename: {file_data['filename']}, Purpose: {file_data['purpose']}")
-
-    print("1. Delete file\n2. Cancel")
-    choice = input("Select an option: ")
-    if choice == '1':
-        file_id_to_delete = input("Enter the ID of the file you want to delete: ")
-        if file_id_to_delete in files:
-            status = file_manager.delete(file_id_to_delete)
-            print(status)
-        else:
-            print("Invalid File ID.")
-    elif choice == '2':
-        print("Canceling...")
-        return
-    else:
-        print("Invalid option.")
-
-
-def create_file(client: OpenAI, file_path, purpose):
-    file_manager = File(client)
-    file_id = file_manager.create(file_path, purpose)
-    return file_id
-
-
-class AssistantManager:
-    def __init__(self, client):
-        self.client = client.beta.assistants
-
-    def create_assistant(self, model, name, instructions, tools, description=None, metadata=None):
-        """
-        Create an assistant without files.
-
-        Args:
-            model: ID of the model to use for the assistant.
-            name (optional): The name of the assistant.
-            instructions (optional): Instructions for the system using the assistant.
-            description (optional): A descriptive text for the assistant.
-            metadata (optional): Metadata in key-value format for the assistant.
-            tools (optional): A list of tools enabled on the assistant.
-
-        Returns:
-            The newly created Assistant object.
-        """
-        response = self.client.create(
-            model=model,
-            name=name,
-            instructions=instructions,
-            description=description,
-            metadata=metadata,
-            tools=tools
-        )
-        return response
-
-    def add_file_to_assistant(self, assistant_id, file_id):
-        """
-        Add a file to an assistant's list of files.
-
-        Args:
-            assistant_id: The ID of the assistant being updated.
-            file_id: The ID of the file to add to the assistant.
-
-        Returns:
-            The updated Assistant object.
-        """
-        assistant = self.client.retrieve(assistant_id)
-        # Use direct attribute access instead of the 'get' method
-        existing_file_ids = assistant.file_ids if assistant.file_ids is not None else []
-        updated_file_ids = existing_file_ids + [file_id]
-
-        response = self.client.update(
-            assistant_id=assistant_id,
-            file_ids=updated_file_ids
-        )
-        return response
-
-    def list_assistants(self):
-        """
-        List all assistants.
-
-        Returns:
-            A list of Assistant objects containing details about each assistant.
-        """
-        return self.client.list()
-
-    def load_assistant(self, assistant_id):
-        """
-        Load an assistant's parameters by ID.
-
-        Args:
-            assistant_id: The unique identifier for the assistant.
-
-        Returns:
-            An Assistant object or details about the assistant.
-        """
-        return self.client.retrieve(assistant_id=assistant_id)
-
-    def print_assistant_details(self, assistant_id):
-        """
-        Retrieve and display the parameters of a specific assistant by ID.
-
-        Args:
-            assistant_id: The unique identifier for the assistant.
-        """
-        assistant = self.load_assistant(assistant_id)
-        assistant_details = assistant.model_dump()
-        print(assistant_details)
-
-    def delete_assistant(self, assistant_id):
-        """
-        Delete an assistant by ID.
-
-        Args:
-            assistant_id: The unique identifier for the assistant.
-
-        Returns:
-            A confirmation message indicating that the assistant was deleted.
-        """
-        response = self.client.delete(assistant_id=assistant_id)
-        return ("Assistant deleted successfully.")
 
 
 class ThreadManager:
@@ -277,11 +113,6 @@ new_assistant = {
     "file_ids": []
 }
 
-new_file = {
-    "file_path": "context/context.txt",
-    "purpose": "assistants"
-}
-
 
 def manage_assistants(client: OpenAI):
     assistant_manager = AssistantManager(client)
@@ -376,13 +207,6 @@ def user_interaction(client):
             print("Invalid choice. Please select a valid option.")
 
 
-def test_file_creation():
-    file_id = create_file(client, new_file['file_path'], new_file['purpose'])
-    print(file_id)
-    file_to_delete = File(client)
-    file_to_delete.delete(file_id)
-
-
 def test_assistant_manager(client, new_assistant, file_id):
     assistant_manager = AssistantManager(client)
 
@@ -434,8 +258,4 @@ def test_assistant_manager(client, new_assistant, file_id):
 
 if __name__ == "__main__":
     client = initiate_client()
-    # test_file_creation()
-    # manage_files(client)
-    # test_assistant_manager(client, new_assistant, "file-ODu0UuYbrx5ech6lKbHWvol4")
-    # manage_assistants(client)
     user_interaction(client)
