@@ -15,8 +15,9 @@ Current functionality:
 * Create assistant
 * List existing assistants
 * Load existing assistant
-* Loading a file in the assistant knowledge
-* Loading multiple files in the assistant knowledge
+* Associate a file in the assistant knowledge
+* Associate multiple files in the assistant knowledge
+* Uploading a file and assigning its purpose
 * Getting a list of uploaded files
 * Deleting a file
 * Chat with GPT-4 Turbo with long context
@@ -34,8 +35,9 @@ Todo list
 * ~~Uploading multiple files~~
 * ~~Deleting a file from the Assistants conversation context~~
 * Editing existing assistant
-* Managing existing conversations
-* Loading files in code interpreter context
+* Loading files in messages
+* Loading existing conversation
 * Downloading files from the code interpreter
 * Loading images in conversation
 * Generating Images with Dali3
+
