@@ -134,11 +134,11 @@ def manage_assistants(client: OpenAI):
         assistant_id = selected_assistant.id
         assistant_manager.print_assistant_details(assistant_id)
 
-        # Update numbered options
         print("\n1. Chat with this assistant")
         print("2. Add file to assistant")
-        print("3. Delete this assistant")
-        print("4. Cancel")
+        print("3. Update this assistant")  # New option to update the assistant
+        print("4. Delete this assistant")
+        print("5. Cancel")
         action = input("Choose an option: ")
 
         if action == '1':
@@ -162,10 +162,14 @@ def manage_assistants(client: OpenAI):
             else:
                 print("Invalid File ID.")
         elif action == '3':
+            # Call the interactive update method from AssistantManager
+            assistant_manager.update_assistant_interactively(assistant_id)
+            print("Assistant updated successfully.")
+        elif action == '4':
             # Delete the assistant
             delete_message = assistant_manager.delete_assistant(assistant_id)
             print(delete_message)
-        elif action == '4':
+        elif action == '5':
             print("Operation canceled.")
         else:
             print("Invalid action.")
@@ -258,4 +262,8 @@ def test_assistant_manager(client, new_assistant, file_id):
 
 if __name__ == "__main__":
     client = initiate_client()
+    # test_file_creation()
+    # manage_files(client)
+    # test_assistant_manager(client, new_assistant, "file-ODu0UuYbrx5ech6lKbHWvol4")
+    # manage_assistants(client)
     user_interaction(client)
