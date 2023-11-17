@@ -17,6 +17,7 @@ Current functionality:
 * Load existing assistant
 * Associate a file in the assistant knowledge
 * Associate multiple files in the assistant knowledge
+* Update assistant parameters
 * Uploading a file and assigning its purpose
 * Getting a list of uploaded files
 * Deleting a file
@@ -34,7 +35,7 @@ Todo list
 * ~~Deleting existing assistant~~
 * ~~Uploading multiple files~~
 * ~~Deleting a file from the Assistants conversation context~~
-* Editing existing assistant
+* ~~Editing existing assistant~~
 * Loading files in messages
 * Loading existing conversation
 * Downloading files from the code interpreter
