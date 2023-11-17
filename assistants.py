@@ -1,5 +1,6 @@
 from openai import OpenAI
 from credentials import openai_key
+import json
 
 
 def initiate_client():
@@ -89,6 +90,43 @@ class AssistantManager:
         assistant = self.load_assistant(assistant_id)
         assistant_details = assistant.model_dump()
         print(assistant_details)
+
+    def update_assistant_interactively(self, assistant_id):
+        """
+        Interactively update an assistant's parameters.
+
+        Args:
+            assistant_id: The unique identifier for the assistant.
+        """
+        assistant = self.load_assistant(assistant_id)
+        # Retrieve the assistant's existing parameters.
+        updatable_params = {
+            'name': assistant.name,
+            'model': assistant.model,
+            'instructions': assistant.instructions,
+            'description': assistant.description,
+            'metadata': assistant.metadata,
+            'tools': assistant.tools
+        }
+
+        # Interactive update process
+        for param_name, current_value in updatable_params.items():
+            print(f'Current value of {param_name}: {current_value}')
+            user_input = input(f'Press Enter to keep the current value or enter a new value for {param_name}: ').strip()
+            # If the user enters a new value, update the parameter
+            if user_input:
+                if param_name in ['metadata', 'tools']:
+                    # Convert the string input to a Python dictionary using json.loads()
+                    try:
+                        updatable_params[param_name] = json.loads(user_input)
+                    except json.JSONDecodeError as e:
+                        print(f'Error: Invalid JSON for {param_name}. Using the current value instead.')
+                else:
+                    updatable_params[param_name] = user_input
+
+        # After all parameters are reviewed, update the assistant details
+        update_response = self.client.update(assistant_id=assistant_id, **updatable_params)
+        return update_response
 
     def delete_assistant(self, assistant_id):
         """
