@@ -41,22 +41,30 @@ def select_file_for_upload(file_path):
         return None
 
 
-class File:
-    def __init__(self, client: OpenAI):
-        self.client = client.files
-
-    def create(self, file_path, purpose):
-        with open(file_path, 'rb') as file_object:
-            response = self.client.create(file=file_object, purpose=purpose)
-            return response.id
-
-    def list(self):
-        files_data = self.client.list().data
-        return {file.id: {"filename": file.filename, "purpose": file.purpose} for file in files_data}
-
-    def delete(self, file_id):
-        self.client.delete(file_id)
-        return f"File with ID {file_id} has been deleted."
+def chose_and_upload_file(client, file_path='context_update'):
+    file_manager = File(client)
+    chosen_file_path = select_file_for_upload(file_path)
+    if chosen_file_path:
+        print("Select the purpose of the file:")
+        print("1. Fine-tune")
+        print("2. Assistants")
+        print("3. Fine-tune results")
+        print("4. Assistants output")
+        purpose_choice = input("Enter the number for the purpose (1, 2, 3 or 4):")
+        if purpose_choice == "1":
+            purpose = "fine-tune"
+        elif purpose_choice == "2":
+            purpose = "assistants"
+        elif purpose_choice == "3":
+            purpose = "fine-tune-results"
+        elif purpose_choice == "4":
+            purpose = "assistants_output"
+        else:
+            print("Invalid option.")
+            return
+        file_id = file_manager.create(chosen_file_path, purpose)
+        print(f"File uploaded successfully with ID: {file_id}")
+        return file_id
 
 
 # Function outside the class to manage files
@@ -78,28 +86,8 @@ def manage_files(client: OpenAI):
         else:
             print("Invalid File ID.")
     elif choice == '2':
-        chosen_file_path = select_file_for_upload("context_update")  # Assuming 'context_update' is the directory
-        if chosen_file_path:
-            print("Select the purpose of the file:")
-            print("1. Fine-tune")
-            print("2. Assistants")
-            print("3. Fine-tune results")
-            print("4. Assistants output")
-            purpose_choice = input("Enter the number for the purpose (1 or 2): ")
-            if purpose_choice == "1":
-                purpose = "fine-tune"
-            elif purpose_choice == "2":
-                purpose = "assistants"
-            elif purpose_choice == "3":
-                purpose = "fine-tune-results"
-            elif purpose_choice == "4":
-                purpose = "assistants_output"
-            else:
-                print("Invalid option.")
-                return
-            file_id = file_manager.create(chosen_file_path, purpose)
-            print(f"File uploaded successfully with ID: {file_id}")
-        return
+        file_id = chose_and_upload_file(client)
+        return file_id
     elif choice == '3':
         print("Canceling...")
         return
@@ -111,6 +99,24 @@ def create_file(client: OpenAI, file_path, purpose):
     file_manager = File(client)
     file_id = file_manager.create(file_path, purpose)
     return file_id
+
+
+class File:
+    def __init__(self, client: OpenAI):
+        self.client = client.files
+
+    def create(self, file_path, purpose):
+        with open(file_path, 'rb') as file_object:
+            response = self.client.create(file=file_object, purpose=purpose)
+            return response.id
+
+    def list(self):
+        files_data = self.client.list().data
+        return {file.id: {"filename": file.filename, "purpose": file.purpose} for file in files_data}
+
+    def delete(self, file_id):
+        self.client.delete(file_id)
+        return f"File with ID {file_id} has been deleted."
 
 
 new_file = {
