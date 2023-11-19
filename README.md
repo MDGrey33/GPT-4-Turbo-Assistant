@@ -22,6 +22,7 @@ Current functionality:
 * Getting a list of uploaded files
 * Deleting a file
 * Chat with GPT-4 Turbo with long context
+* Loading files in messages
 
 
 ## Todo list
@@ -36,7 +37,7 @@ Todo list
 * ~~Uploading multiple files~~
 * ~~Deleting a file from the Assistants conversation context~~
 * ~~Editing existing assistant~~
-* Loading files in messages
+* ~~Loading files in messages~~
 * Loading existing conversation
 * Downloading files from the code interpreter
 * Loading images in conversation
