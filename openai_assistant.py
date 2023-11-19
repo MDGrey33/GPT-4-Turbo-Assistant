@@ -1,7 +1,7 @@
 import time
 from openai import OpenAI
 from credentials import openai_key
-from chat_bot.files import File, manage_files, create_file
+from chat_bot.files import File, manage_files, chose_and_upload_file
 from chat_bot.assistants import AssistantManager
 
 
@@ -30,7 +30,7 @@ class ThreadManager:
         thread = self.client.beta.threads.create()
         self.thread_id = thread.id
 
-    def add_message_and_wait_for_reply(self, message_content):
+    def add_message_and_wait_for_reply(self, user_message, message_files):
         """
         Adds a message to the thread and waits for a reply from the assistant.
 
@@ -41,7 +41,8 @@ class ThreadManager:
         self.client.beta.threads.messages.create(
             thread_id=self.thread_id,
             role="user",
-            content=message_content
+            content=user_message,
+            file_ids=message_files
         )
 
         # Request the assistant to process the message
@@ -95,12 +96,27 @@ class ThreadManager:
         """
         print("Welcome to the Assistant Chat!")
         self.create_thread()
-
+        # update the loop to be multiline
         while True:
-            user_input = input("You: ")
+            user_message = ""
+            message_files = []
+            print("You: \nWrite your message, or write 'DONE' to finish the message, or 'QUIT' to abort the chat.")
+            user_input = input()
             if user_input.lower() == 'quit':
                 break
-            self.add_message_and_wait_for_reply(user_input)
+            else:
+                while user_input.lower() != "done":
+                    user_message = (user_message + user_input + "\n")
+                    user_input = ""
+                    user_input = input()
+                while True:
+                    action = input("If you want add a file type 1 else type 2")
+                    if action == "1":
+                        file_id = chose_and_upload_file(client, file_path='context_update')
+                        message_files.append(file_id)
+                    elif action == "2":
+                        break
+            self.add_message_and_wait_for_reply(user_message, message_files)
 
 
 new_assistant = {
@@ -114,15 +130,16 @@ new_assistant = {
 }
 
 
-def manage_assistants(client: OpenAI):
-    assistant_manager = AssistantManager(client)
-
+def list_assistants(assistant_manager):
     # List assistants
     print("Available Assistants:")
     assistants = assistant_manager.list_assistants().data
     for index, assistant in enumerate(assistants, start=1):
         print(f"{index}. {assistant.name} (ID: {assistant.id})")
+    return assistants
 
+
+def chose_assistant(assistant_manager, assistants):
     assistant_index = input("Enter the number of the assistant you want to manage or 'c' to cancel: ")
     if assistant_index.lower() == 'c':
         print("Operation canceled.")
@@ -133,48 +150,65 @@ def manage_assistants(client: OpenAI):
         selected_assistant = assistants[assistant_index]
         assistant_id = selected_assistant.id
         assistant_manager.print_assistant_details(assistant_id)
-
-        print("\n1. Chat with this assistant")
-        print("2. Add file to assistant")
-        print("3. Update this assistant")  # New option to update the assistant
-        print("4. Delete this assistant")
-        print("5. Cancel")
-        action = input("Choose an option: ")
-
-        if action == '1':
-            thread_manager = ThreadManager(client, assistant_id)
-            thread_manager.chat()
-        elif action == '2':
-            # List files
-            file_manager = File(client)
-            files = file_manager.list()
-            print("Available Files:")
-            for file_id, file_data in files.items():
-                print(f"ID: {file_id}, Filename: {file_data['filename']}, Purpose: {file_data['purpose']}")
-
-            file_id_to_add = input("Enter the ID of the file you want to add or 'c' to cancel: ")
-            if file_id_to_add.lower() == 'c':
-                print("Operation canceled.")
-            elif file_id_to_add in files:
-                assistant_manager.add_file_to_assistant(assistant_id, file_id_to_add)
-                print("File added successfully.")
-                assistant_manager.print_assistant_details(assistant_id)
-            else:
-                print("Invalid File ID.")
-        elif action == '3':
-            # Call the interactive update method from AssistantManager
-            assistant_manager.update_assistant_interactively(assistant_id)
-            print("Assistant updated successfully.")
-        elif action == '4':
-            # Delete the assistant
-            delete_message = assistant_manager.delete_assistant(assistant_id)
-            print(delete_message)
-        elif action == '5':
-            print("Operation canceled.")
-        else:
-            print("Invalid action.")
     else:
         print("Invalid assistant number.")
+    return assistant_id
+
+
+def chose_assistant_action():
+    print("\n1. Chat with this assistant")
+    print("2. Add file to assistant")
+    print("3. Update this assistant")
+    print("4. Delete this assistant")
+    print("5. Cancel")
+    action = input("Choose an option: ")
+    return action
+
+
+def add_file_to_assistant(assistant_manager, assistant_id):
+    file_manager = File(client)
+    files = file_manager.list()
+    print("Available Files:")
+    for file_id, file_data in files.items():
+        print(f"ID: {file_id}, Filename: {file_data['filename']}, Purpose: {file_data['purpose']}")
+
+    file_id_to_add = input("Enter the ID of the file you want to add or 'c' to cancel: ")
+    if file_id_to_add.lower() == 'c':
+        print("Operation canceled.")
+    elif file_id_to_add in files:
+        assistant_manager.add_file_to_assistant(assistant_id, file_id_to_add)
+        print("File added successfully.")
+        assistant_manager.print_assistant_details(assistant_id)
+    else:
+        print("Invalid File ID.")
+
+
+def manage_assistants(client: OpenAI):
+    assistant_manager = AssistantManager(client)
+    assistants = list_assistants(assistant_manager)
+    assistant_id = chose_assistant(assistant_manager, assistants)
+    action = chose_assistant_action()
+    if action == '1':
+        # Chat with assistant
+        thread_manager = ThreadManager(client, assistant_id)
+        thread_manager.chat()
+    elif action == '2':
+        # Add file to assistant
+        add_file_to_assistant(assistant_manager, assistant_id)
+    elif action == '3':
+        # Update assistant parameters
+        # Call the interactive update method from AssistantManager
+        assistant_manager.update_assistant_interactively(assistant_id)
+        print("Assistant updated successfully.")
+    elif action == '4':
+        # Delete the assistant
+        delete_message = assistant_manager.delete_assistant(assistant_id)
+        print(delete_message)
+    elif action == '5':
+        # exit menu
+        print("Operation canceled.")
+    else:
+        print("Invalid action.")
 
 
 def user_interaction(client):
