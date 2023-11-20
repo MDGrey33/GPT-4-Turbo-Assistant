@@ -2,6 +2,8 @@
 
 This is an implementation of GPT-4-Turbo assistant on Python.
 
+[Ask this GPT any questions you have about this code.](https://chat.openai.com/g/g-yJoNW6R47-junior-be-engineer)
+
 YouTube video showing how it works kind of recorded QA https://youtu.be/4KgEMO4Ufis
 
 Video showing how I added a file to the assistant context https://youtu.be/34IfrpEQMMA
