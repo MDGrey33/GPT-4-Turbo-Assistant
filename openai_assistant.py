@@ -160,7 +160,8 @@ def chose_assistant_action():
     print("2. Add file to assistant")
     print("3. Update this assistant")
     print("4. Delete this assistant")
-    print("5. Cancel")
+    print("5. Check assistant files")
+    print("6. Cancel")
     action = input("Choose an option: ")
     return action
 
@@ -194,10 +195,12 @@ def manage_assistants(client: OpenAI):
         thread_manager.chat()
     elif action == '2':
         # Add file to assistant
+        assistant_manager.clean_missing_files_from_assistant(assistant_id)
         add_file_to_assistant(assistant_manager, assistant_id)
     elif action == '3':
         # Update assistant parameters
         # Call the interactive update method from AssistantManager
+        assistant_manager.clean_missing_files_from_assistant(assistant_id)
         assistant_manager.update_assistant_interactively(assistant_id)
         print("Assistant updated successfully.")
     elif action == '4':
@@ -205,6 +208,8 @@ def manage_assistants(client: OpenAI):
         delete_message = assistant_manager.delete_assistant(assistant_id)
         print(delete_message)
     elif action == '5':
+        assistant_manager.clean_missing_files_from_assistant(assistant_id)
+    elif action == '6':
         # exit menu
         print("Operation canceled.")
     else:
