@@ -1,6 +1,7 @@
 from openai import OpenAI
 from credentials import openai_key
 import json
+from chat_bot.files import File
 
 
 def initiate_client():
@@ -37,6 +38,34 @@ class AssistantManager:
         )
         return response
 
+    def clean_missing_files_from_assistant(self, assistant_id):
+        assistant = self.load_assistant(assistant_id)
+        assistant_file_ids = assistant.file_ids if assistant.file_ids is not None else []
+
+        # Check if the assistant has any file IDs associated with it
+        if not assistant_file_ids:
+            print("No files are associated with this assistant.")
+            return []
+
+        file_manager = File(initiate_client())
+        all_files = file_manager.list()
+        file_ids = list(all_files.keys())
+
+        missing_files = [file_id for file_id in assistant_file_ids if file_id not in file_ids]
+
+        # Check if there are any missing files
+        if missing_files:
+            for missing_file in missing_files:
+                print(f"Deleting missing file {missing_file} from assistant {assistant_id}.")
+                self.client.update(
+                    assistant_id=assistant_id,
+                    file_ids=[file_id for file_id in assistant_file_ids if file_id != missing_file]
+                )
+        else:
+            print("There are no missing files.")
+
+        return missing_files
+
     def add_file_to_assistant(self, assistant_id, file_id):
         """
         Add a file to an assistant's list of files.
@@ -49,7 +78,6 @@ class AssistantManager:
             The updated Assistant object.
         """
         assistant = self.client.retrieve(assistant_id)
-        # Use direct attribute access instead of the 'get' method
         existing_file_ids = assistant.file_ids if assistant.file_ids is not None else []
         updated_file_ids = existing_file_ids + [file_id]
 
