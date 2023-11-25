@@ -2,6 +2,8 @@
 
 This is an implementation of GPT-4-Turbo assistant on Python.
 
+[Ask this GPT any questions you have about this code.](https://chat.openai.com/g/g-yJoNW6R47-gpt-4-turbo-assistants-python-dev)
+
 ## Getting Started with GPT-4-Turbo-Assistant
 
 This guide will help you set up and start using the GPT-4-Turbo-Assistant.
@@ -36,8 +38,6 @@ Choose an assistant from the list
 Select the option to chat with the assistant.
 
 ## What is GPT-4-Turbo-Assistant
-
-[Ask this GPT any questions you have about this code.](https://chat.openai.com/g/g-yJoNW6R47-gpt-4-turbo-assistants-python-dev)
 
 [YouTube video showing how it works kind of recorded QA](https://youtu.be/4KgEMO4Ufis)
 
