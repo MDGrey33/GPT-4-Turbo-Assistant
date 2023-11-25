@@ -4,9 +4,9 @@ This is an implementation of GPT-4-Turbo assistant on Python.
 
 [Ask this GPT any questions you have about this code.](https://chat.openai.com/g/g-yJoNW6R47-gpt-4-turbo-assistants-python-dev)
 
-YouTube video showing how it works kind of recorded QA https://youtu.be/4KgEMO4Ufis
+[YouTube video showing how it works kind of recorded QA](https://youtu.be/4KgEMO4Ufis)
 
-Video showing how I added a file to the assistant context https://youtu.be/34IfrpEQMMA
+[Video showing how I added a file to the assistant context](https://youtu.be/34IfrpEQMMA)
 
 I will go into more detail about it as I explore more, feel free to contribute.
 
@@ -15,7 +15,8 @@ For now, it implements the conversation with the extended context and code inter
 Updates
 
 * Made my peace with this being an ongoing project, added a local git repo for it and lined it here.
-* Added .gitignore and requirements.txt 
+* Added .gitignore and requirements.txt
+* Will update the Chat with this codebase custom GPT with the recent files today.
 
 Current functionality:
 
@@ -49,4 +50,3 @@ Todo list
 * Downloading files from the code interpreter
 * Loading images in conversation
 * Generating Images with Dali3
-

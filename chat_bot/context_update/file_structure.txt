@@ -1,0 +1,4 @@
+└─[$] <> ls
+__pycache__      chat_bot         credentials.py   myenv            requirements.txt
+└─[$] <> ls -r ./chat_bot
+utility.py           thread_manager.py    openai_assistant.py  file_manager.py      context_update       context              assistant_manager.py __pycache__          __init__.py
