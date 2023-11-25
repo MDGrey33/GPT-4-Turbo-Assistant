@@ -6,6 +6,17 @@ from chat_bot.utility import new_assistant
 from chat_bot.utility import select_file_for_upload
 
 
+def create_assistant(client, new_assistant=new_assistant):
+    assistant_manager = AssistantManager(client)
+    return assistant_manager.create_assistant(
+        new_assistant['model'],
+        new_assistant['name'],
+        new_assistant['instructions'],
+        new_assistant['tools'],
+        new_assistant['description']
+    )
+
+
 def chat_with_assistant(thread_manager):
     print("Welcome to the Assistant Chat!")
     thread_manager.create_thread()
@@ -77,6 +88,33 @@ def chose_and_upload_file(client, file_path='context_update'):
         return file_id
 
 
+def add_file_to_assistant(assistant_manager, assistant_id):
+    file_manager = FileManager(client)
+    files = file_manager.list()
+
+    print("Available Files:")
+    file_list = list(files.items())
+    for index, (file_id, file_data) in enumerate(file_list, start=1):
+        print(f"{index}. {file_data['filename']} (ID: {file_id})")
+
+    file_index = input("Select the number of the file you want to add or '0' to cancel: ")
+    if file_index == '0':
+        print("Operation canceled.")
+        return
+
+    try:
+        file_index = int(file_index) - 1
+        if 0 <= file_index < len(file_list):
+            file_id_to_add = file_list[file_index][0]
+            assistant_manager.add_file_to_assistant(assistant_id, file_id_to_add)
+            print("File added successfully.")
+            assistant_manager.print_assistant_details(assistant_id)
+        else:
+            print("Invalid file number.")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
+
 def chose_assistant(assistant_manager, assistants):
     print("\nSelect an Assistant")
     print("-------------------")
@@ -103,33 +141,6 @@ def chose_assistant(assistant_manager, assistants):
     except ValueError:
         print("Invalid input. Please enter a number.")
         return None
-
-
-def add_file_to_assistant(assistant_manager, assistant_id):
-    file_manager = FileManager(client)
-    files = file_manager.list()
-
-    print("Available Files:")
-    file_list = list(files.items())
-    for index, (file_id, file_data) in enumerate(file_list, start=1):
-        print(f"{index}. {file_data['filename']} (ID: {file_id})")
-
-    file_index = input("Select the number of the file you want to add or '0' to cancel: ")
-    if file_index == '0':
-        print("Operation canceled.")
-        return
-
-    try:
-        file_index = int(file_index) - 1
-        if 0 <= file_index < len(file_list):
-            file_id_to_add = file_list[file_index][0]
-            assistant_manager.add_file_to_assistant(assistant_id, file_id_to_add)
-            print("File added successfully.")
-            assistant_manager.print_assistant_details(assistant_id)
-        else:
-            print("Invalid file number.")
-    except ValueError:
-        print("Invalid input. Please enter a number.")
 
 
 def chose_assistant_action():
@@ -256,14 +267,7 @@ def user_interaction(client):
         elif choice == '2':
             manage_assistants(client)
         elif choice == '3':
-            assistant_manager = AssistantManager(client)
-            created_assistant = assistant_manager.create_assistant(
-                new_assistant['model'],
-                new_assistant['name'],
-                new_assistant['instructions'],
-                new_assistant['tools'],
-                new_assistant['description']
-            )
+            created_assistant = create_assistant(client, new_assistant)
             print(f"New assistant created with ID: {created_assistant.id}")
         elif choice == '0':
             print("Exiting user interaction menu.")
