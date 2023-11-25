@@ -4,7 +4,17 @@ from chat_bot.utility import initiate_client
 
 
 class AssistantManager:
+    """
+    AssistantManager provides functionalities to manage the lifecycle of assistants.
+    It includes creating, listing, loading, updating, and deleting assistants within the GPT-4-Turbo-Assistant environment.
+    """
     def __init__(self, client):
+        """
+        Initialize the AssistantManager with a client to manage assistants.
+
+        Parameters:
+        client (OpenAI_Client): The client object used for assistant operations.
+        """
         self.client = client.beta.assistants
 
     def create_assistant(self, model, name, instructions, tools, description=None, metadata=None):
@@ -33,6 +43,19 @@ class AssistantManager:
         return response
 
     def clean_missing_files_from_assistant(self, assistant_id):
+        """
+        Identifies and removes missing file references from an assistant's configuration.
+
+        This function checks the files associated with the specified assistant and identifies any files
+        that are no longer present in the file system. It then updates the assistant's configuration
+        to remove these missing files.
+
+        Parameters:
+        assistant_id (str): The ID of the assistant to be cleaned.
+
+        Returns:
+        list: A list of file IDs that were identified as missing and removed from the assistant.
+        """
         assistant = self.load_assistant(assistant_id)
         assistant_file_ids = assistant.file_ids if assistant.file_ids is not None else []
 

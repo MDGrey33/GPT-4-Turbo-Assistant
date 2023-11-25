@@ -4,6 +4,12 @@ import os
 
 
 def initiate_client():
+    """
+    Initializes and returns an OpenAI client using the provided API key.
+
+    Returns:
+    OpenAI: An instance of the OpenAI client configured with the specified API key.
+    """
     client = OpenAI(api_key=openai_key)
     return client
 
@@ -29,6 +35,15 @@ def get_all_files_in_path(file_path):
 
 # Additional function to select a file for upload
 def select_file_for_upload(file_path):
+    """
+    Presents a list of all files in the specified path and allows the user to select a file for upload.
+
+    Parameters:
+    file_path (str): The path where files are located.
+
+    Returns:
+    str: The path of the selected file, or None if the selection is invalid.
+    """
     all_files = get_all_files_in_path(file_path)
     print("Please select a file to upload:")
     for idx, file_name in enumerate(all_files):
@@ -41,7 +56,7 @@ def select_file_for_upload(file_path):
         return None
 
 
-# Sample assistant to use when creating a new assistant
+# Sample assistant template used for creating new assistants in the system.
 new_assistant = {
     "model": "gpt-4-1106-preview",
     "name": "Laura",

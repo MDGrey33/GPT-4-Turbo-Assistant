@@ -5,6 +5,16 @@ from chat_bot.thread_manager import ThreadManager
 
 
 def create_assistant(client, new_assistant=new_assistant):
+    """
+    Creates a new assistant based on the provided template.
+
+    Parameters:
+    client: OpenAI client instance used for assistant creation.
+    new_assistant (dict, optional): Template for the new assistant. Defaults to the global `new_assistant`.
+
+    Returns:
+    Assistant: An instance of the created assistant.
+    """
     assistant_manager = AssistantManager(client)
     return assistant_manager.create_assistant(
         new_assistant['model'],
@@ -16,6 +26,15 @@ def create_assistant(client, new_assistant=new_assistant):
 
 
 def chat_with_assistant(thread_manager):
+    """
+    Facilitates a chat interaction with an assistant using the provided thread manager.
+
+    Parameters:
+    thread_manager (ThreadManager): An instance of ThreadManager to handle the chat thread.
+
+    Returns:
+    None
+    """
     print("Welcome to the Assistant Chat!")
     thread_manager.create_thread()
 
@@ -61,6 +80,16 @@ def chat_with_assistant(thread_manager):
 
 
 def chose_and_upload_file(client, file_path='context_update'):
+    """
+    Allows the user to select and upload a file from the specified path.
+
+    Parameters:
+    client: OpenAI client instance used for file operations.
+    file_path (str, optional): The path where files are located. Defaults to 'context_update'.
+
+    Returns:
+    str: The ID of the uploaded file, or None if the operation is unsuccessful or canceled.
+    """
     file_manager = FileManager(client)
     chosen_file_path = select_file_for_upload(file_path)
     if chosen_file_path:
@@ -87,6 +116,16 @@ def chose_and_upload_file(client, file_path='context_update'):
 
 
 def add_file_to_assistant(assistant_manager, assistant_id):
+    """
+    Adds a file to the specified assistant.
+
+    Parameters:
+    assistant_manager (AssistantManager): An instance of AssistantManager to handle file addition.
+    assistant_id (str): The ID of the assistant to add the file to.
+
+    Returns:
+    None
+    """
     file_manager = FileManager(client)
     files = file_manager.list()
 
@@ -114,6 +153,16 @@ def add_file_to_assistant(assistant_manager, assistant_id):
 
 
 def chose_assistant(assistant_manager, assistants):
+    """
+    Allows the user to select an assistant from a list.
+
+    Parameters:
+    assistant_manager (AssistantManager): An instance of AssistantManager for managing assistants.
+    assistants (list): A list of available assistants.
+
+    Returns:
+    str: The ID of the selected assistant, or None if the operation is canceled.
+    """
     print("\nSelect an Assistant")
     print("-------------------")
     for index, assistant in enumerate(assistants, start=1):
@@ -142,6 +191,12 @@ def chose_assistant(assistant_manager, assistants):
 
 
 def chose_assistant_action():
+    """
+    Presents a menu for the user to choose an action to perform on an assistant.
+
+    Returns:
+    str: The selected action as a string.
+    """
     print("\nChoose an Action for the Assistant")
     print("------------------------------------")
     print("1. Chat - Chat with this assistant.")
@@ -156,6 +211,15 @@ def chose_assistant_action():
 
 
 def manage_assistants(client):
+    """
+    Provides a management interface for assistants.
+
+    Parameters:
+    client: OpenAI client instance used for managing assistants.
+
+    Returns:
+    None
+    """
     assistant_manager = AssistantManager(client)
     assistants = assistant_manager.list_assistants().data
 
@@ -197,6 +261,15 @@ def manage_assistants(client):
 
 
 def manage_files(client):
+    """
+    Provides a file management interface for managing files associated with assistants.
+
+    Parameters:
+    client: OpenAI client instance used for file management.
+
+    Returns:
+    None
+    """
     file_manager = FileManager(client)
 
     while True:
@@ -250,6 +323,15 @@ def manage_files(client):
 
 
 def user_interaction(client):
+    """
+    Provides the main user interaction interface for managing files and assistants.
+
+    Parameters:
+    client: OpenAI client instance used for user interactions.
+
+    Returns:
+    None
+    """
     while True:
         print("\nUser Interaction Menu:")
         print("--------------------------------")

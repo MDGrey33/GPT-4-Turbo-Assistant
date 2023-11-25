@@ -2,13 +2,22 @@ import time
 
 
 class ThreadManager:
+    """
+    Manages threads for asynchronous handling of conversations or operations in the GPT-4-Turbo-Assistant.
+
+    This class provides functionality to create and manage threads, allowing simultaneous operations and
+    conversations. It handles adding messages, waiting for replies, checking the status of operations,
+    and retrieving and displaying messages within these threads.
+
+    Attributes:
+    client (OpenAI_Client): An instance of the client used for handling thread operations.
+    """
     def __init__(self, client, assistant_id):
         """
-        Initializes the ThreadManager with an OpenAI client and an assistant ID.
+        Initializes the ThreadManager with a client to manage threads.
 
-        Args:
-            client: The OpenAI client object.
-            assistant_id: The ID of the assistant to use for the chat.
+        Parameters:
+        client (OpenAI_Client): The client object used for thread operations.
         """
         self.client = client
         self.assistant_id = assistant_id
@@ -16,17 +25,28 @@ class ThreadManager:
 
     def create_thread(self):
         """
-        Creates a new thread.
+        Creates a new thread with the specified thread ID.
+
+        Parameters:
+        thread_id (str): The identifier for the new thread.
+
+        Returns:
+        None
         """
         thread = self.client.beta.threads.create()
         self.thread_id = thread.id
 
     def add_message_and_wait_for_reply(self, user_message, message_files):
         """
-        Adds a message to the thread and waits for a reply from the assistant.
+        Adds a message to a thread and waits for the reply.
 
-        Args:
-            message_content: The content of the user's message.
+        Parameters:
+        thread_id (str): The ID of the thread to add the message to.
+        user_message (str): The message from the user to add to the thread.
+        message_files (list): List of file IDs associated with the message.
+
+        Returns:
+        list: A list of messages constituting the conversation thread.
         """
         # Add the user's message to the thread
         self.client.beta.threads.messages.create(
@@ -55,10 +75,13 @@ class ThreadManager:
 
     def check_run_status(self, run_id):
         """
-        Checks the status of a run in the thread.
+        Checks the status of a thread run.
 
-        Args:
-            run_id: The ID of the run to check.
+        Parameters:
+        thread_id (str): The ID of the thread to check.
+
+        Returns:
+        str: The current status of the thread run.
         """
         return self.client.beta.threads.runs.retrieve(
             thread_id=self.thread_id,
@@ -67,7 +90,13 @@ class ThreadManager:
 
     def retrieve_messages(self):
         """
-        Retrieves messages from the thread.
+        Retrieves all messages from the specified thread.
+
+        Parameters:
+        thread_id (str): The ID of the thread to retrieve messages from.
+
+        Returns:
+        list: A list of messages from the thread.
         """
         return self.client.beta.threads.messages.list(
             thread_id=self.thread_id
@@ -75,7 +104,13 @@ class ThreadManager:
 
     def display_messages(self, messages):
         """
-        Displays messages from the assistant in the thread.
+        Displays the messages from a thread.
+
+        Parameters:
+        messages (list): A list of messages to be displayed.
+
+        Returns:
+        None
         """
         for message in messages.data:
             if message.role == "assistant":
