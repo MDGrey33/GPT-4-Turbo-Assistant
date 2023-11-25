@@ -12,6 +12,8 @@ I will go into more detail about it as I explore more, feel free to contribute.
 
 For now, it implements the conversation with the extended context and code interpreter.
 
+Major code clean ups coming before Monday, some renaming, some optimization of code and Ui
+
 Current functionality:
 
 * Create assistant
@@ -26,7 +28,6 @@ Current functionality:
 * Chat with GPT-4 Turbo with long context
 * Loading files in messages
 * Auto clean up deleted files from an assistant on file add and update.
-
 
 ## Todo list
 This is an implementation of GPT-4-Turbo assistant on Python.  
