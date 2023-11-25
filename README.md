@@ -12,7 +12,10 @@ I will go into more detail about it as I explore more, feel free to contribute.
 
 For now, it implements the conversation with the extended context and code interpreter.
 
-Major code clean ups coming before Monday, some renaming, some optimization of code and Ui
+Updates
+
+* Made my peace with this being an ongoing project, added a local git repo for it and lined it here.
+* Added .gitignore and requirements.txt 
 
 Current functionality:
 
