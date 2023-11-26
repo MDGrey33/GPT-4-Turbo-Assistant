@@ -6,7 +6,7 @@ This is an implementation of GPT-4-Turbo assistant on Python.
 
 ## Getting Started with GPT-4-Turbo-Assistant
 
-### In a hurry?
+### In a hurry and using a mac?
 Let me do the job for you : )
 
 put the following code in a file called Install_GPT-4-Turbo-Assistant.sh
@@ -62,6 +62,13 @@ cd GPT-4-Turbo-Assistant
 ```
 
 #### Step 2: Install Requirements
+````bash
+chmod +x run_openai_assistant.sh
+./run_openai_assistant.sh
+````
+
+or continue to perform the rest of hte steps manually
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -71,16 +78,19 @@ Replace 'your_openai_api_key' with your actual OpenAI API key in credentials.py.
 ```
 "API_KEY='your_openai_api_key'"
 ```
+#### Step 4: Set the PYTHONPATH environment variable
+````bash
+export PYTHONPATH="${PYTHONPATH}:${current_directory}"
+````
+#### Step 5: Run the openai_assistant module
+````bash
+python -m chat_bot.openai_assistant
+````
 
-#### Step 4: Run the Assistant Script in your favorite interpreter
-```
-./chat_bot/openai_assistant.py
-```
-
-#### Step 5: Create an Assistant
+#### Step 6: Create an Assistant
 Follow the menu prompts to create a new assistant.
 
-#### Step 6: Chat with an Assistant
+#### Step 7: Chat with an Assistant
 Choose an assistant from the list
 Select the option to chat with the assistant.
 
