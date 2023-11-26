@@ -13,6 +13,41 @@ put the following code in a file called Install_GPT-4-Turbo-Assistant.sh
 ```bash
 #!/bin/bash
 
+# Function to check if Conda is installed
+check_conda_installed() {
+    which conda >/dev/null
+}
+
+# Function to install Miniconda
+install_miniconda() {
+    echo "Downloading Miniconda..."
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+    echo "Installing Miniconda..."
+    bash miniconda.sh -b -p $HOME/miniconda
+    rm miniconda.sh
+    echo "Miniconda installed."
+}
+
+# Function to create and activate virtual environment
+setup_environment() {
+    local env_name=$1
+    echo "Creating and activating environment '$env_name'..."
+    conda create -n "$env_name" python=3.8 -y
+    source activate "$env_name"
+    echo "Environment '$env_name' is ready."
+}
+
+# Main script execution for Miniconda and environment setup
+if check_conda_installed; then
+    echo "Conda is already installed."
+else
+    install_miniconda
+    eval "$($HOME/miniconda/bin/conda shell.bash hook)"
+fi
+
+ENV_NAME="gpt4-turbo-env"
+setup_environment "$ENV_NAME"
+
 # Define the Git repository URL
 git_repo_url="https://github.com/MDGrey33/GPT-4-Turbo-Assistant.git"
 
