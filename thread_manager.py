@@ -72,6 +72,7 @@ class ThreadManager:
         # Retrieve and display the messages
         messages = self.retrieve_messages()
         self.display_messages(messages)
+        return messages
 
     def check_run_status(self, run_id):
         """
