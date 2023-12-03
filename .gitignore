@@ -1,8 +1,0 @@
-/credentials.py
-/chat_bot/context/
-/chat_bot/context_update/
-!/chat_bot/context_update/file_structure.txt
-/myenv/
-/.idea/
-/__pycache__/
-/chat_bot/__pycache__/
