@@ -5,6 +5,10 @@ from oai_assistants.thread_manager import ThreadManager
 from oai_assistants.assistant_manager import AssistantManager
 
 
+# TODO
+# Allow to load a list of files to the assistant
+# Trigger assistant with real Vector RAG context
+
 def create_new_assistant():
     """
     Creates a new assistant with the specified parameters.
