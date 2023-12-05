@@ -1,3 +1,4 @@
+# /Users/roland/code/Nur/oai_assistants/query_assistant_from_documents.py
 from oai_assistants.openai_assistant import create_assistant
 from oai_assistants.utility import initiate_client
 from oai_assistants.file_manager import FileManager
