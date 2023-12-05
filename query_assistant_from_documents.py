@@ -1,22 +1,16 @@
-from oai_assistants.openai_assistant import create_assistant, add_file_to_assistant, chat_with_assistant
+from oai_assistants.openai_assistant import create_assistant
 from oai_assistants.utility import initiate_client
 from oai_assistants.file_manager import FileManager
 from oai_assistants.thread_manager import ThreadManager
 from oai_assistants.assistant_manager import AssistantManager
 
 
-# TODO
-# Allow to load a list of files to the assistant
-# Trigger assistant with real Vector RAG context
-
 def create_new_assistant():
     """
     Creates a new assistant with the specified parameters.
     """
-    # initialize openai client
     client = initiate_client()
 
-    # Define assistant parameters
     new_assistant = {
         "model": "gpt-4-1106-preview",
         "name": "Shams",
@@ -31,41 +25,34 @@ def create_new_assistant():
         "file_ids": []
     }
 
-    # Creating assistant
     assistant = create_assistant(client, new_assistant)
     print(assistant)
     return assistant
 
 
-def add_files_to_assistant(assistant, file_id):
+def add_files_to_assistant(assistant, file_ids):
     """
-    Adds a file to an assistant's list of files.
+    Adds multiple files to an assistant's list of files.
     """
-    # initialize openai client
     client = initiate_client()
-
-    # Uploading file to Open AI
-    chosen_file_path = f"/Users/roland/code/Nur/content/file_system/{file_id}.txt"
-    purpose = "assistants"
     file_manager = FileManager(client)
-    file_id = file_manager.create(chosen_file_path, purpose)
-    print(f"File uploaded successfully with ID: {file_id}")
-
-    # Adding file to assistant
-    # Adding file to assistant
     assistant_manager = AssistantManager(client)
-    assistant_manager.add_file_to_assistant(assistant.id, file_id)
-    print(f"File {chosen_file_path} added to assistant {assistant.id}")
+
+    for file_id in file_ids:
+        chosen_file_path = f"/Users/roland/code/Nur/content/file_system/{file_id}.txt"
+        purpose = "assistants"
+        uploaded_file_id = file_manager.create(chosen_file_path, purpose)
+        print(f"File uploaded successfully with ID: {uploaded_file_id}")
+
+        assistant_manager.add_file_to_assistant(assistant.id, uploaded_file_id)
+        print(f"File {chosen_file_path} added to assistant {assistant.id}")
 
 
 def ask_assistant(assistant, question):
     """
     Asks an assistant a question.
     """
-    # initialize openai client
     client = initiate_client()
-
-    # Creating a thread manager
     thread_manager = ThreadManager(client, assistant.id)
     thread_manager.create_thread()
     question = (f"You will answer the following question with a summary, then provide a comprehensive answer, "
@@ -75,17 +62,15 @@ def ask_assistant(assistant, question):
 
 
 def get_response_from_assistant(question, page_ids):
-    # Creating a new assistant
     assistant = create_new_assistant()
 
-    # adding files to assistant
-    add_files_to_assistant(assistant, page_ids)
+    if not isinstance(page_ids, list):
+        page_ids = [page_ids]
 
-    # Ask assistant
+    add_files_to_assistant(assistant, page_ids)
     messages = ask_assistant(assistant, question)
     print(messages)
 
 
 if __name__ == "__main__":
-    get_response_from_assistant("Do we support payment matching in our solution?", "458841")
-
+    get_response_from_assistant("Do we support payment matching in our solution? and if the payment is not matched do we already have a way to notify the client that they have a delayed payment?", ["458841", "491570"])
