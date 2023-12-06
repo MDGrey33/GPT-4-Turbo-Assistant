@@ -70,7 +70,8 @@ def get_response_from_assistant(question, page_ids):
 
     add_files_to_assistant(assistant, page_ids)
     messages = ask_assistant(assistant, question)
-    print(messages)
+    # print(messages)
+    return messages
 
 
 if __name__ == "__main__":

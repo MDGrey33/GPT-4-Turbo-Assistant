@@ -66,7 +66,7 @@ class ThreadManager:
         run_status = self.check_run_status(run.id)
         while run_status.status != "completed":
             print("Waiting for assistant...")
-            time.sleep(2)
+            time.sleep(20)
             run_status = self.check_run_status(run.id)
 
         # Retrieve and display the messages
