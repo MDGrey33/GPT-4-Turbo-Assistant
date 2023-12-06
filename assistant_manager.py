@@ -1,3 +1,4 @@
+# ./oai_assistants/assistant_manager.py
 import json
 from oai_assistants.file_manager import FileManager
 from oai_assistants.utility import initiate_client

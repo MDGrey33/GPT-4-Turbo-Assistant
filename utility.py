@@ -1,3 +1,4 @@
+# ./oai_assistants/utility.py
 from openai import OpenAI
 from credentials import oai_api_key
 import os

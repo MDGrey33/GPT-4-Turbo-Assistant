@@ -1,3 +1,4 @@
+# ./oai_assistants/openai_assistant.py
 from oai_assistants.utility import new_assistant, select_file_for_upload, initiate_client
 from oai_assistants.file_manager import FileManager
 from oai_assistants.assistant_manager import AssistantManager
