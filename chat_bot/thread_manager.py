@@ -1,4 +1,3 @@
-# ./oai_assistants/thread_manager.py
 import time
 
 
@@ -67,13 +66,12 @@ class ThreadManager:
         run_status = self.check_run_status(run.id)
         while run_status.status != "completed":
             print("Waiting for assistant...")
-            time.sleep(20)
+            time.sleep(2)
             run_status = self.check_run_status(run.id)
 
         # Retrieve and display the messages
         messages = self.retrieve_messages()
         self.display_messages(messages)
-        return messages
 
     def check_run_status(self, run_id):
         """

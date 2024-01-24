@@ -1,8 +1,7 @@
-# ./oai_assistants/openai_assistant.py
-from oai_assistants.utility import new_assistant, select_file_for_upload, initiate_client
-from oai_assistants.file_manager import FileManager
-from oai_assistants.assistant_manager import AssistantManager
-from oai_assistants.thread_manager import ThreadManager
+from chat_bot.utility import new_assistant, select_file_for_upload, initiate_client
+from chat_bot.file_manager import FileManager
+from chat_bot.assistant_manager import AssistantManager
+from chat_bot.thread_manager import ThreadManager
 
 
 def create_assistant(client, new_assistant=new_assistant):

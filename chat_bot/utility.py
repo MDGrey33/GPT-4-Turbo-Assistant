@@ -1,6 +1,5 @@
-# ./oai_assistants/utility.py
 from openai import OpenAI
-from credentials import oai_api_key
+from credentials import openai_key
 import os
 
 
@@ -11,7 +10,7 @@ def initiate_client():
     Returns:
     OpenAI: An instance of the OpenAI client configured with the specified API key.
     """
-    client = OpenAI(api_key=oai_api_key)
+    client = OpenAI(api_key=openai_key)
     return client
 
 

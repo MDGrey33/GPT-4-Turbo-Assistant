@@ -1,4 +1,3 @@
-# ./oai_assistants/file_manager.py
 class FileManager:
     """
         FileManager handles operations related to file management in the context of the GPT-4-Turbo-Assistant.
