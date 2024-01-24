@@ -1,3 +1,4 @@
+# ./chat_bot/assistant_manager.py
 import json
 from chat_bot.file_manager import FileManager
 from chat_bot.utility import initiate_client

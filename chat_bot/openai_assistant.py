@@ -1,3 +1,4 @@
+# ./chat_bot/openai_assistant.py
 from chat_bot.utility import new_assistant, select_file_for_upload, initiate_client
 from chat_bot.file_manager import FileManager
 from chat_bot.assistant_manager import AssistantManager

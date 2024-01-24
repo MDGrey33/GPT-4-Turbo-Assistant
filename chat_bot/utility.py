@@ -1,3 +1,5 @@
+# ./chat_bot/utility.py
+
 from openai import OpenAI
 from credentials import openai_key
 import os
